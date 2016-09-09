@@ -612,7 +612,7 @@ class Entity extends Source
         foreach ($columns as $column) {
             $selectFrom = $column->getSelectFrom();
 
-            if ($column->getFilterType() === 'select' && ($selectFrom === 'source' || $selectFrom === 'query')) {
+            if (substr($column->getFilterType(), 0, 6) === 'select' && ($selectFrom === 'source' || $selectFrom === 'query')) {
 
                 // For negative operators, show all values
                 if ($selectFrom === 'query') {
