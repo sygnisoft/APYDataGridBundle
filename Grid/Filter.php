@@ -77,7 +77,7 @@ class Filter
      */
     public function isTrim()
     {
-        return $this->trim;
+        return $this->trim && is_string($this->value);
     }
 
     /**

@@ -100,7 +100,7 @@ abstract class Column
     protected $isAggregate;
     protected $usePrefixTitle;
     protected $translationDomain;
-    protected $trim = false;
+    protected $trim = true;
 
     protected $dataJunction = self::DATA_CONJUNCTION;
 
@@ -170,7 +170,7 @@ abstract class Column
         $this->setExport($this->getParam('export'));
         $this->setClass($this->getParam('class'));
         $this->setTranslationDomain($this->getParam('translation_domain'));
-        $this->setTrim($this->getParam('trim', false));
+        $this->setTrim($this->getParam('trim', true));
     }
 
     protected function getParam($id, $default = null)
