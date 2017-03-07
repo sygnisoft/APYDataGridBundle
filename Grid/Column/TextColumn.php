@@ -16,6 +16,14 @@ use APY\DataGridBundle\Grid\Filter;
 
 class TextColumn extends Column
 {
+    public function __construct($params = null)
+    {
+        if (null !== $params || !isset($params['trim'])) {
+            $params['trim'] = true;
+        }
+        parent::__construct($params);
+    }
+
     public function isQueryValid($query)
     {
         $result = array_filter((array) $query, "is_string");
@@ -42,6 +50,7 @@ class TextColumn extends Column
                 default:
                     $filters[] = $filter;
             }
+            $filter->setTrim($this->trim);
         }
 
         return $filters;

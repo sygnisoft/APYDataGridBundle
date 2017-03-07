@@ -17,12 +17,14 @@ class Filter
     protected $value;
     protected $operator;
     protected $columnName;
+    protected $trim = false;
 
-    public function __construct($operator, $value = null, $columnName = null)
+    public function __construct($operator, $value = null, $columnName = null, $trim = false)
     {
         $this->value = $value;
         $this->operator = $operator;
         $this->columnName = $columnName;
+        $this->trim = $trim;
     }
 
     public function setOperator($operator)
@@ -46,6 +48,10 @@ class Filter
 
     public function getValue()
     {
+        if ($this->isTrim()) {
+            $this->value = trim($this->value);
+        }
+
         return $this->value;
     }
 
@@ -64,5 +70,24 @@ class Filter
     public function getColumnName()
     {
         return $this->columnName;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTrim()
+    {
+        return $this->trim;
+    }
+
+    /**
+     * @param bool $trim
+     * @return Filter
+     */
+    public function setTrim($trim)
+    {
+        $this->trim = $trim;
+
+        return $this;
     }
 }
