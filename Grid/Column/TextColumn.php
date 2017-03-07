@@ -18,7 +18,7 @@ class TextColumn extends Column
 {
     public function __construct($params = null)
     {
-        if (null !== $params || !isset($params['trim'])) {
+        if (null === $params || !isset($params['trim'])) {
             $params['trim'] = true;
         }
         parent::__construct($params);
