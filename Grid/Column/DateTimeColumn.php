@@ -13,12 +13,13 @@
 namespace APY\DataGridBundle\Grid\Column;
 
 use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToLocalizedStringTransformer;
+use IntlDateFormatter;
 
 class DateTimeColumn extends Column
 {
-    protected $dateFormat = \IntlDateFormatter::MEDIUM;
+    protected $dateFormat = IntlDateFormatter::MEDIUM;
 
-    protected $timeFormat = \IntlDateFormatter::MEDIUM;
+    protected $timeFormat = IntlDateFormatter::MEDIUM;
 
     protected $format;
 
@@ -44,7 +45,7 @@ class DateTimeColumn extends Column
             self::OPERATOR_ISNOTNULL,
         )));
         $this->setDefaultOperator($this->getParam('defaultOperator', self::OPERATOR_EQ));
-        $this->setTimezone($this->getParam('timezone',date_default_timezone_get()));
+        $this->setTimezone($this->getParam('timezone', date_default_timezone_get()));
     }
 
     public function isQueryValid($query)
@@ -64,8 +65,15 @@ class DateTimeColumn extends Column
         $parentFilters = parent::getFilters($source);
 
         $filters = array();
-        foreach($parentFilters as $filter) {
-            $filters[] = ($filter->getValue() === null) ? $filter : $filter->setValue(new \DateTime($filter->getValue()));
+        foreach ($parentFilters as $filter) {
+            $originalDateTime = new \DateTime(
+                $filter->getValue(),
+                new \DateTimeZone($this->getTimezone())
+            );
+            $preparedDateTime = clone $originalDateTime;
+            $preparedDateTime->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+
+            $filters[] = ($filter->getValue() === null) ? $filter : $filter->setValue($preparedDateTime);
         }
 
         return $filters;
@@ -91,7 +99,12 @@ class DateTimeColumn extends Column
                 $value = $dateTime->format($this->format);
             } else {
                 try {
-                    $transformer = new DateTimeToLocalizedStringTransformer(null, $this->getTimezone(), $this->dateFormat, $this->timeFormat);
+                    $transformer = new DateTimeToLocalizedStringTransformer(
+                        null,
+                        $this->getTimezone(),
+                        $this->dateFormat,
+                        $this->timeFormat
+                    );
                     $value = $transformer->transform($dateTime);
                 } catch (\Exception $e) {
                     $value = $dateTime->format($this->fallbackFormat);
