@@ -32,7 +32,7 @@ class DateTimeColumn extends Column
         parent::__initialize($params);
 
         $this->setFormat($this->getParam('format'));
-        $this->setOperators($this->getParam('operators', array(
+        $this->setOperators($this->getParam('operators', [
             self::OPERATOR_EQ,
             self::OPERATOR_NEQ,
             self::OPERATOR_LT,
@@ -43,14 +43,14 @@ class DateTimeColumn extends Column
             self::OPERATOR_BTWE,
             self::OPERATOR_ISNULL,
             self::OPERATOR_ISNOTNULL,
-        )));
+        ]));
         $this->setDefaultOperator($this->getParam('defaultOperator', self::OPERATOR_EQ));
         $this->setTimezone($this->getParam('timezone', date_default_timezone_get()));
     }
 
     public function isQueryValid($query)
     {
-        $result = array_filter((array) $query, array($this, "isDateTime"));
+        $result = array_filter((array) $query, [$this, 'isDateTime']);
 
         return !empty($result);
     }
@@ -64,7 +64,7 @@ class DateTimeColumn extends Column
     {
         $parentFilters = parent::getFilters($source);
 
-        $filters = array();
+        $filters = [];
         foreach ($parentFilters as $filter) {
             $originalDateTime = new \DateTime(
                 $filter->getValue(),
@@ -82,7 +82,7 @@ class DateTimeColumn extends Column
     public function renderCell($value, $row, $router)
     {
         $value = $this->getDisplayedValue($value);
-        
+
         if (is_callable($this->callback)) {
             $value = call_user_func($this->callback, $value, $row, $router);
         }
@@ -111,7 +111,7 @@ class DateTimeColumn extends Column
                 }
             }
 
-            if (key_exists((string)$value, $this->values)) {
+            if (array_key_exists((string) $value, $this->values)) {
                 $value = $this->values[$value];
             }
 
@@ -122,21 +122,22 @@ class DateTimeColumn extends Column
     }
 
     /**
-     * DateTimeHelper::getDatetime() from SonataIntlBundle
+     * DateTimeHelper::getDatetime() from SonataIntlBundle.
      *
-     * @param \Datetime|\DateTimeImmutable|string|integer $data
+     * @param \Datetime|\DateTimeImmutable|string|int $data
      * @param \DateTimeZone timezone
+     *
      * @return \Datetime
      */
     protected function getDatetime($data, \DateTimeZone $timezone)
     {
-        if($data instanceof \DateTime || $data instanceof \DateTimeImmutable) {
+        if ($data instanceof \DateTime || $data instanceof \DateTimeImmutable) {
             return $data->setTimezone($timezone);
         }
 
         // the format method accept array or integer
         if (is_numeric($data)) {
-            $data = (int)$data;
+            $data = (int) $data;
         }
 
         if (is_string($data)) {
@@ -149,7 +150,7 @@ class DateTimeColumn extends Column
         }
 
         // Mongodb bug ? timestamp value is on the key 'i' instead of the key 't'
-        if (is_array($data) && array_keys($data) == array('t','i')) {
+        if (is_array($data) && array_keys($data) == ['t', 'i']) {
             $data = $data['i'];
         }
 
@@ -181,7 +182,6 @@ class DateTimeColumn extends Column
     {
         $this->timezone = $timezone;
     }
-
 
     public function getType()
     {
