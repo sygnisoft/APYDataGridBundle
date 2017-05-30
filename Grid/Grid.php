@@ -1393,6 +1393,11 @@ class Grid implements GridInterface
                 throw new \Exception('Unable to load template');
             }
 
+            /** Fix błędu, w przypadku inicjalizacji grida z poziomu helpera następuje wygenerowanie nowego
+             Hasha sesji, przez co nie ma dostępu do parametrów. */
+            $this->createHash();
+            /** end fix */
+
             $this->set(self::REQUEST_QUERY_TEMPLATE, $template);
             $this->saveSession();
         }
