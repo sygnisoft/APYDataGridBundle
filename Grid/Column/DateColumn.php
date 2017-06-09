@@ -29,10 +29,10 @@ class DateColumn extends DateTimeColumn
             if ($filter->getValue() !== null) {
                 $dateFrom = $filter->getValue();
                 $dateFrom->setTime(0, 0, 0);
-
+                $dateFrom->modify(-$this->getTimeZoneOffsetInHours().' hours');
                 $dateTo = clone $dateFrom;
                 $dateTo->setTime(23, 59, 59);
-
+                $dateTo->modify(-$this->getTimeZoneOffsetInHours().' hours');
                 switch ($filter->getOperator()) {
                     case self::OPERATOR_EQ:
                         $filters[] = new Filter(self::OPERATOR_GTE, $dateFrom);
