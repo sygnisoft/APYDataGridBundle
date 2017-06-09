@@ -12,6 +12,7 @@
 
 namespace APY\DataGridBundle\Grid\Column;
 
+use DateTime;
 use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToLocalizedStringTransformer;
 use IntlDateFormatter;
 
@@ -32,25 +33,30 @@ class DateTimeColumn extends Column
         parent::__initialize($params);
 
         $this->setFormat($this->getParam('format'));
-        $this->setOperators($this->getParam('operators', [
-            self::OPERATOR_EQ,
-            self::OPERATOR_NEQ,
-            self::OPERATOR_LT,
-            self::OPERATOR_LTE,
-            self::OPERATOR_GT,
-            self::OPERATOR_GTE,
-            self::OPERATOR_BTW,
-            self::OPERATOR_BTWE,
-            self::OPERATOR_ISNULL,
-            self::OPERATOR_ISNOTNULL,
-        ]));
+        $this->setOperators(
+            $this->getParam(
+                'operators',
+                [
+                    self::OPERATOR_EQ,
+                    self::OPERATOR_NEQ,
+                    self::OPERATOR_LT,
+                    self::OPERATOR_LTE,
+                    self::OPERATOR_GT,
+                    self::OPERATOR_GTE,
+                    self::OPERATOR_BTW,
+                    self::OPERATOR_BTWE,
+                    self::OPERATOR_ISNULL,
+                    self::OPERATOR_ISNOTNULL,
+                ]
+            )
+        );
         $this->setDefaultOperator($this->getParam('defaultOperator', self::OPERATOR_EQ));
         $this->setTimezone($this->getParam('timezone', date_default_timezone_get()));
     }
 
     public function isQueryValid($query)
     {
-        $result = array_filter((array) $query, [$this, 'isDateTime']);
+        $result = array_filter((array)$query, [$this, 'isDateTime']);
 
         return !empty($result);
     }
@@ -111,7 +117,7 @@ class DateTimeColumn extends Column
                 }
             }
 
-            if (array_key_exists((string) $value, $this->values)) {
+            if (array_key_exists((string)$value, $this->values)) {
                 $value = $this->values[$value];
             }
 
@@ -137,7 +143,7 @@ class DateTimeColumn extends Column
 
         // the format method accept array or integer
         if (is_numeric($data)) {
-            $data = (int) $data;
+            $data = (int)$data;
         }
 
         if (is_string($data)) {
@@ -186,5 +192,12 @@ class DateTimeColumn extends Column
     public function getType()
     {
         return 'datetime';
+    }
+
+    protected function getTimeZoneOffsetInHours()
+    {
+        $dt = new DateTime('NOW', new \DateTimeZone('UTC'));
+        $utc = new \DateTimeZone($this->getTimezone());
+        return $utc->getOffset($dt) / 3600;
     }
 }
