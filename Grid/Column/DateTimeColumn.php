@@ -72,12 +72,10 @@ class DateTimeColumn extends Column
 
         $filters = [];
         foreach ($parentFilters as $filter) {
-            $originalDateTime = new \DateTime(
+            $preparedDateTime = new \DateTime(
                 $filter->getValue(),
                 new \DateTimeZone($this->getTimezone())
             );
-            $preparedDateTime = clone $originalDateTime;
-            $preparedDateTime->setTimezone(new \DateTimeZone(date_default_timezone_get()));
 
             $filters[] = ($filter->getValue() === null) ? $filter : $filter->setValue($preparedDateTime);
         }
@@ -196,8 +194,9 @@ class DateTimeColumn extends Column
 
     protected function getTimeZoneOffsetInHours()
     {
-        $dt = new DateTime('NOW', new \DateTimeZone('UTC'));
-        $utc = new \DateTimeZone($this->getTimezone());
-        return $utc->getOffset($dt) / 3600;
+        $utcDateTime = new DateTime('NOW', new \DateTimeZone('UTC'));
+        $currentTimezone = new \DateTimeZone($this->getTimezone());
+
+        return $currentTimezone->getOffset($utcDateTime) / 3600;
     }
 }

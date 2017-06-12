@@ -28,9 +28,9 @@ class DateColumn extends DateTimeColumn
         foreach ($parentFilters as $filter) {
             if ($filter->getValue() !== null) {
                 $dateFrom = $filter->getValue();
+                $dateTo = clone $dateFrom;
                 $dateFrom->setTime(0, 0, 0);
                 $dateFrom->modify(-$this->getTimeZoneOffsetInHours().' hours');
-                $dateTo = clone $dateFrom;
                 $dateTo->setTime(23, 59, 59);
                 $dateTo->modify(-$this->getTimeZoneOffsetInHours().' hours');
                 switch ($filter->getOperator()) {
