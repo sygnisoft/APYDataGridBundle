@@ -1,4 +1,7 @@
 services:
+    _defaults:
+        public: true
+
     # Core
     apy_grid.factory:
         class: APY\DataGridBundle\Grid\GridFactory
