@@ -20,6 +20,7 @@ use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Column\MassActionColumn;
 use APY\DataGridBundle\Grid\Export\ExportInterface;
 use APY\DataGridBundle\Grid\Source\Entity;
+use APY\DataGridBundle\Grid\Source\MaxResultsEntity;
 use APY\DataGridBundle\Grid\Source\Source;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -1080,6 +1081,12 @@ class Grid implements GridInterface
 
         if (!is_int($this->totalCount)) {
             throw new \Exception(sprintf(self::INVALID_TOTAL_COUNT_EX_MSG, gettype($this->totalCount)));
+        }
+        
+        if ($this->source instanceof MaxResultsEntity) {
+            if ($this->source->isOverLimit()) {
+                $this->setNoResultMessage('label.grid_over_limit');
+            }
         }
 
         $this->prepared = true;
