@@ -20,6 +20,21 @@ class FormRowAction implements RowActionInterface
     /** @var string */
     protected $confirmMessage;
 
+    /** @var bool */
+    protected $prompt = false;
+
+    /** @var string */
+    protected $promptMessage = '';
+
+    /** @var string|null */
+    protected $promptValue = null;
+
+    /** @var bool */
+    protected $promptNotEmpty = true;
+
+    /** @var string */
+    protected $promptFieldName = 'promptField';
+
     /** @var string */
     protected $target;
 
@@ -167,6 +182,106 @@ class FormRowAction implements RowActionInterface
         return $this->confirmMessage;
     }
 
+    /**
+     * @return bool
+     */
+    public function isPrompt(): bool
+    {
+        return $this->prompt;
+    }
+
+    /**
+     * @param bool $prompt
+     *
+     * @return self
+     */
+    public function setPrompt(bool $prompt): self
+    {
+        $this->prompt = $prompt;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPromptMessage(): string
+    {
+        return $this->promptMessage;
+    }
+
+    /**
+     * @param string $promptMessage
+     *
+     * @return self
+     */
+    public function setPromptMessage(string $promptMessage): self
+    {
+        $this->promptMessage = $promptMessage;
+
+        return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getPromptValue(): ?string
+    {
+        return $this->promptValue;
+    }
+
+    /**
+     * @param null|string $promptValue
+     *
+     * @return self
+     */
+    public function setPromptValue(?string $promptValue): self
+    {
+        $this->promptValue = $promptValue;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPromptNotEmpty(): bool
+    {
+        return $this->promptNotEmpty;
+    }
+
+    /**
+     * @param bool $promptNotEmpty
+     *
+     * @return self
+     */
+    public function setPromptNotEmpty(bool $promptNotEmpty): self
+    {
+        $this->promptNotEmpty = $promptNotEmpty;
+
+        return $this;
+    }
+    
+    /**
+     * @return string
+     */
+    public function getPromptFieldName(): string
+    {
+        return $this->promptFieldName;
+    }
+
+    /**
+     * @param string $promptFieldName
+     *
+     * @return self
+     */
+    public function setPromptFieldName(string $promptFieldName): self
+    {
+        $this->promptFieldName = $promptFieldName;
+
+        return $this;
+    }
+    
     /**
      * Set action target.
      *
