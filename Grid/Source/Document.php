@@ -255,7 +255,11 @@ class Document extends Source
         // As I didn't find out this information, I'm gonna test it with Cursor returned only.
         $cursor = $this->query->getQuery()->execute();
 
-        $this->count = $cursor->count();
+        if ($cursor instanceof \Countable) {
+            $this->count = $cursor->count();
+        } else {
+            $this->count = count($cursor->toArray());
+        }
 
         foreach ($cursor as $resource) {
             $row = new Row();
