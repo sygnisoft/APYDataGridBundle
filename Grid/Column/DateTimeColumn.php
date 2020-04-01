@@ -12,19 +12,21 @@
 
 namespace APY\DataGridBundle\Grid\Column;
 
-use DateTime;
 use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToLocalizedStringTransformer;
-use IntlDateFormatter;
 
 class DateTimeColumn extends Column
 {
-    protected $dateFormat = IntlDateFormatter::MEDIUM;
+    protected $dateFormat = \IntlDateFormatter::MEDIUM;
 
-    protected $timeFormat = IntlDateFormatter::MEDIUM;
+    protected $timeFormat = \IntlDateFormatter::MEDIUM;
 
     protected $format;
 
     protected $fallbackFormat = 'Y-m-d H:i:s';
+
+    protected $inputFormat;
+
+    protected $fallbackInputFormat = 'Y-m-d H:i:s';
 
     protected $timezone;
 
@@ -33,6 +35,7 @@ class DateTimeColumn extends Column
         parent::__initialize($params);
 
         $this->setFormat($this->getParam('format'));
+        $this->setInputFormat($this->getParam('inputFormat', $this->fallbackInputFormat));
         $this->setOperators(
             $this->getParam(
                 'operators',
@@ -56,14 +59,14 @@ class DateTimeColumn extends Column
 
     public function isQueryValid($query)
     {
-        $result = array_filter((array)$query, [$this, 'isDateTime']);
+        $result = array_filter((array) $query, [$this, 'isDateTime']);
 
         return !empty($result);
     }
 
     protected function isDateTime($query)
     {
-        return strtotime($query) !== false;
+        return false !== \DateTime::createFromFormat($this->inputFormat, $query);
     }
 
     public function getFilters($source)
@@ -72,12 +75,7 @@ class DateTimeColumn extends Column
 
         $filters = [];
         foreach ($parentFilters as $filter) {
-            $preparedDateTime = new \DateTime(
-                $filter->getValue(),
-                new \DateTimeZone($this->getTimezone())
-            );
-
-            $filters[] = ($filter->getValue() === null) ? $filter : $filter->setValue($preparedDateTime);
+            $filters[] = ($filter->getValue() === null) ? $filter : $filter->setValue(\DateTime::createFromFormat($this->inputFormat, $filter->getValue()));
         }
 
         return $filters;
@@ -115,7 +113,7 @@ class DateTimeColumn extends Column
                 }
             }
 
-            if (array_key_exists((string)$value, $this->values)) {
+            if (array_key_exists((string) $value, $this->values)) {
                 $value = $this->values[$value];
             }
 
@@ -141,7 +139,7 @@ class DateTimeColumn extends Column
 
         // the format method accept array or integer
         if (is_numeric($data)) {
-            $data = (int)$data;
+            $data = (int) $data;
         }
 
         if (is_string($data)) {
@@ -177,6 +175,18 @@ class DateTimeColumn extends Column
         return $this->format;
     }
 
+    public function setInputFormat($inputFormat)
+    {
+        $this->inputFormat = $inputFormat;
+
+        return $this;
+    }
+
+    public function getInputFormat()
+    {
+        return $this->inputFormat;
+    }
+
     public function getTimezone()
     {
         return $this->timezone;
@@ -194,7 +204,7 @@ class DateTimeColumn extends Column
 
     protected function getTimeZoneOffsetInHours()
     {
-        $utcDateTime = new DateTime('NOW', new \DateTimeZone('UTC'));
+        $utcDateTime = new \DateTime('NOW', new \DateTimeZone('UTC'));
         $currentTimezone = new \DateTimeZone($this->getTimezone());
 
         return $currentTimezone->getOffset($utcDateTime) / 3600;
