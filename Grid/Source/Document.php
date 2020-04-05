@@ -474,8 +474,7 @@ class Document extends Source
                     $values['type'] = 'array';
                     if (isset($mapping['reference']) && true === $mapping['reference']) {
                         $this->referencedMappings[$name] = $mapping['targetDocument'];
-                    }
-                    if (isset($mapping['embedded']) && true === $mapping['embedded']) {
+                    } elseif (isset($mapping['embedded']) && true === $mapping['embedded']) {
                         $this->embedMappings[$name] = $mapping['targetDocument'];
                     }
                     break;
