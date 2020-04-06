@@ -14,6 +14,7 @@
 
 namespace APY\DataGridBundle\Grid\Source;
 
+use APY\DataGridBundle\Grid\Column\BooleanColumn;
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Helper\ColumnsIterator;
 use APY\DataGridBundle\Grid\Row;
@@ -233,6 +234,9 @@ class Document extends Source
                     //normalize values
                     $operator = $this->normalizeOperator($filter->getOperator());
                     $value = $this->normalizeValue($filter->getOperator(), $filter->getValue());
+                    if ($column instanceof BooleanColumn) {
+                        $value = (bool) $value;
+                    }
 
                     if ($column->getDataJunction() === Column::DATA_DISJUNCTION) {
                         $this->query->addOr($this->query->expr()->field($column->getField())->$operator($value));
@@ -539,8 +543,8 @@ class Document extends Source
                 $result = $query->select($column->getField())
                     ->distinct($column->getField())
                     ->sort($column->getField(), 'asc')
-                    ->skip(null)
-                    ->limit(null)
+//                    ->skip(null)
+//                    ->limit(null)
                     ->getQuery()
                     ->execute();
 
