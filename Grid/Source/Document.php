@@ -377,6 +377,20 @@ class Document extends Source
             $node = $node[strtolower($parent)];
 
             foreach ($subColumns as $field) {
+                $subFields = explode('.', $field);
+                if (count($subFields) > 1) {
+                    $getter0 = 'get' . ucfirst($subFields[0]);
+                    $getter1 = 'get' . ucfirst($subFields[1]);
+                    if (method_exists($node, $getter0)) {
+                        $subNode = $node->$getter0();
+                        if (is_object($subNode) && method_exists($subNode, $getter1)) {
+                            $row->setField($parent.'.'.$field, $subNode->$getter1());
+                        }
+                    } else {
+                        throw new \Exception(sprintf('Method %s for Document %s not exists', $getter0, $this->referencedMappings[$parent]));
+                    }
+                    continue;
+                }
                 $getter = 'get' . ucfirst($field);
                 if (method_exists($node, $getter)) {
                     $row->setField($parent . '.' . $field, $node->$getter());
