@@ -337,7 +337,12 @@ class Document extends Source
 
     protected function addEmbedColumn(array $subColumn, Column $column): void
     {
-        $this->embedColumns[$subColumn[0]][] = $subColumn[1];
+        $count = count($subColumn);
+        if (2 === $count) {
+            $this->embedColumns[$subColumn[0]][] = $subColumn[1];
+        } elseif(3 === $count) {
+            $this->embedColumns[$subColumn[0]][] = $subColumn[1].'.'.$subColumn[2];
+        }
 
         if ($column->isFiltered()) {
             $filters = $column->getFilters('document');
