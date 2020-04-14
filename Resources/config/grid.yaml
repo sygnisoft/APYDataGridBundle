@@ -56,3 +56,8 @@ services:
         class: APY\DataGridBundle\Grid\Column\TimeColumn
         tags:
             - { name: apy_grid.column }
+
+    apy_grid.column.uuid:
+        class: APY\DataGridBundle\Grid\Column\UuidColumn
+        tags:
+            - { name: apy_grid.column }
