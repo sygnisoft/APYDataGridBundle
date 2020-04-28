@@ -246,7 +246,7 @@ class Entity extends Source
                 return "$functionWithParameters as $alias";
             }
 
-            return $alias;
+            return $functionWithParameters;
         }
 
         if ($withAlias) {
