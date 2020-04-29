@@ -15,6 +15,7 @@ namespace APY\DataGridBundle\Grid\Source;
 
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Column\JoinColumn;
+use APY\DataGridBundle\Grid\Column\UuidColumn;
 use APY\DataGridBundle\Grid\Row;
 use APY\DataGridBundle\Grid\Rows;
 use Doctrine\ORM\NoResultException;
@@ -438,6 +439,9 @@ class Entity extends Source
                     $columnForFilter = (!$column instanceof JoinColumn) ? $column : $columnsById[$filter->getColumnName()];
 
                     $fieldName = $this->getFieldName($columnForFilter, false);
+                    if ($columnForFilter instanceof UuidColumn) {
+                        $fieldName = sprintf('CAST(%s as TEXT)', $fieldName);
+                    }
                     $bindIndexPlaceholder = "?$bindIndex";
 
                     if( in_array($filter->getOperator(), array(Column::OPERATOR_LIKE,Column::OPERATOR_RLIKE,Column::OPERATOR_LLIKE,Column::OPERATOR_NLIKE,))){
