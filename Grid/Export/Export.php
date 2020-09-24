@@ -22,15 +22,15 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
 {
     const DEFAULT_TEMPLATE = '@APYDataGridBundle/blocks.html.twig';
 
-    protected  $title;
+    protected $title;
 
-    protected  $fileName;
+    protected $fileName;
 
     protected ?string $fileExtension = null;
 
     protected string $mimeType = 'application/octet-stream';
 
-    protected  $parameters = [];
+    protected $parameters = [];
 
     protected $container;
 
