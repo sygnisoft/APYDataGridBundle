@@ -12,6 +12,8 @@
 
 namespace APY\DataGridBundle\Grid\Export;
 
+use APY\DataGridBundle\Grid\Grid;
+
 interface ExportInterface
 {
     /**
@@ -19,7 +21,7 @@ interface ExportInterface
      *
      * @param Grid $grid The grid
      */
-    public function computeData($grid);
+    public function computeData(Grid $grid);
 
     /**
      * Get the export Response.
