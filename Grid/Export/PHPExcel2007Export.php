@@ -17,9 +17,9 @@ namespace APY\DataGridBundle\Grid\Export;
  */
 class PHPExcel2007Export extends PHPExcel5Export
 {
-    protected $fileExtension = 'xlsx';
+    protected ?string $fileExtension = 'xlsx';
 
-    protected $mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    protected string $mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 
     protected function getWriter()
     {

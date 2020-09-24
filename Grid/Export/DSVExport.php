@@ -12,16 +12,18 @@
 
 namespace APY\DataGridBundle\Grid\Export;
 
+use APY\DataGridBundle\Grid\Grid;
+
 /**
  * Delimiter-Separated Values.
  */
 class DSVExport extends Export
 {
-    protected $fileExtension = null;
+    protected ?string $fileExtension = null;
 
-    protected $mimeType = 'application/octet-stream';
+    protected string $mimeType = 'application/octet-stream';
 
-    protected $delimiter = '';
+    protected ?string $delimiter = '';
 
     protected $withBOM = true;
 
@@ -33,7 +35,7 @@ class DSVExport extends Export
         parent::__construct($title, $fileName, $params, $charset);
     }
 
-    public function computeData($grid)
+    public function computeData(Grid $grid)
     {
         $data = $this->getFlatGridData($grid);
 

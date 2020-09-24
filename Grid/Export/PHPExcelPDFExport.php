@@ -17,9 +17,9 @@ namespace APY\DataGridBundle\Grid\Export;
  */
 class PHPExcelPDFExport extends PHPExcel5Export
 {
-    protected $fileExtension = 'pdf';
+    protected ?string $fileExtension = 'pdf';
 
-    protected $mimeType = 'application/pdf';
+    protected string $mimeType = 'application/pdf';
 
     protected function getWriter()
     {
