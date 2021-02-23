@@ -16,6 +16,7 @@ use APY\DataGridBundle\Grid\Column\ArrayColumn;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Twig\Environment;
 use Twig\TemplateWrapper;
 
 abstract class Export implements ExportInterface, ContainerAwareInterface
@@ -442,12 +443,20 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
         if (is_string($template)) {
             if (substr($template, 0, 8) === '__SELF__') {
                 $this->templates = $this->getTemplatesFromString(substr($template, 8));
-                $this->templates[] = $this->twig->loadTemplate(static::DEFAULT_TEMPLATE);
+                if (Environment::MAJOR_VERSION >= 3) {
+                    $this->templates[] = $this->twig->load(static::DEFAULT_TEMPLATE);
+                } else {
+                    $this->templates[] = $this->twig->loadTemplate(static::DEFAULT_TEMPLATE);
+                }
             } else {
                 $this->templates = $this->getTemplatesFromString($template);
             }
         } elseif ($this->templates === null) {
-            $this->templates[] = $this->twig->loadTemplate(static::DEFAULT_TEMPLATE);
+            if (Environment::MAJOR_VERSION >= 3) {
+                $this->templates[] = $this->twig->load(static::DEFAULT_TEMPLATE);
+            } else {
+                $this->templates[] = $this->twig->loadTemplate(static::DEFAULT_TEMPLATE);
+            }
         } else {
             throw new \Exception('Unable to load template');
         }
@@ -459,7 +468,11 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     {
         $templates = [];
 
-        $template = $this->twig->loadTemplate($theme);
+        if (Environment::MAJOR_VERSION >= 3) {
+            $template = $this->twig->load($theme);
+        } else {
+            $template = $this->twig->loadTemplate($theme);
+        }
         while ($template instanceof TemplateWrapper) {
             $templates[] = $template;
             $template = $template->getParent([]);
